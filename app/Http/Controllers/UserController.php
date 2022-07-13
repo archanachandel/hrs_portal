@@ -143,7 +143,7 @@ class UserController extends Controller
                 return response()->json(['status'=>'success', 'code'=>'200','data'=>"Passwordreset successfully"]);
             }
           }
-          return response()->json(['status'=>'success', 'code'=>'200','data'=>"you have not fill password ,can login with old password"]);
+          return response()->json(['status'=>'success', 'code'=>'200','data'=>"you have not fill password ,can login with old passwordgit "]);
         }
       catch(Exception $e){
         return response()->json(['status'=>'error','code'=>'500','meassage'=>$e->getmessage()]);
@@ -159,10 +159,31 @@ class UserController extends Controller
                   return response()->json(['status'=>'error','code'=>'500','meassage'=>$e->getmessage()]);
         }
     }
-    public function logout (Request $request){
-        echo $accessToken =$request->user()->token();die();
-        $token= $request->user()->tokens->find($accessToken);
-        $token->revoke();
-        return response(['message' => 'You have been successfully logged out.'], 200);
+    public function UserDelete(Request $request){
+        try{
+            $user= auth('sanctum')->user();
+            //dd($user);
+            $usercheck = auth('sanctum')->check();
+            if($usercheck == ""){
+                return response()->json(['status'=>'error','code'=>'401','message'=>'User is not login']);    
+            } 
+            $id=$request->id;
+            if($user->role_id==1){
+                $data=User::findorfail( $id);
+                if($data){
+                 $data->delete();
+                     return response()->json(['status'=>'success', 'code'=>'200','data'=>"user deleted successfully"]);
+                }
+                else{
+                    return response()->json(['status'=>'error','code'=>'404','message'=>'User not found']);
+                }
+            }
+            return response()->json(['status'=>'error','code'=>'401','message'=>'not authorised']);    
+        }
+        catch(Exception $e){
+            return response()->json(['status'=>'error','code'=>'500','meassage'=>$e->getmessage()]);
+        }
     }
+    
+   
 }

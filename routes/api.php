@@ -48,7 +48,7 @@ use App\Http\Controllers\NotifyController;
     Route::get('/assign_notification', [NotifyController::class,'assign_notification']);
     Route::post('/close_notification', [NotifyController::class,'close_notification']);
     Route::post('/PasswordReset', [UserController::class,'PasswordReset']);
-
+    Route::post('/UserDelete', [UserController::class,'UserDelete']);
 
 
    // Route::post('/getUserList', [LeadController::class,'getUserList']);
