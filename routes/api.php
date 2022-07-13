@@ -47,6 +47,7 @@ use App\Http\Controllers\NotifyController;
     Route::get('/getnotification', [NotifyController::class,'getnotification']);
     Route::get('/assign_notification', [NotifyController::class,'assign_notification']);
     Route::post('/close_notification', [NotifyController::class,'close_notification']);
+    Route::post('/PasswordReset', [UserController::class,'PasswordReset']);
 
 
 

@@ -129,4 +129,22 @@ class UserController extends Controller
             return response()->json(['status'=>'error','code'=>'500','meassage'=>$e->getmessage()]);
         }
     }
+    public function PasswordReset(Request $request){
+        try{
+            $user= auth('sanctum')->user();
+            $usercheck = auth('sanctum')->check();
+            if($usercheck == ""){
+                return response()->json(['status'=>'error','code'=>'401','message'=>'User is not login']);    
+            } 
+            $id= $user->id;
+            $data=User::where('id',$id)->update(['password'=>Hash::make($request->password)]);
+            if(count(array($data))){
+                return response()->json(['status'=>'success', 'code'=>'200','data'=>"Passwordreset successfully"]);
+            }
+        }
+      catch(Exception $e){
+        return response()->json(['status'=>'error','code'=>'500','meassage'=>$e->getmessage()]);
+        }
+
+    }
 }
