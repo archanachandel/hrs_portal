@@ -137,14 +137,32 @@ class UserController extends Controller
                 return response()->json(['status'=>'error','code'=>'401','message'=>'User is not login']);    
             } 
             $id= $user->id;
+            if($request->filled('password')){
             $data=User::where('id',$id)->update(['password'=>Hash::make($request->password)]);
             if(count(array($data))){
                 return response()->json(['status'=>'success', 'code'=>'200','data'=>"Passwordreset successfully"]);
             }
+          }
+          return response()->json(['status'=>'success', 'code'=>'200','data'=>"you have not fill password ,can login with old password"]);
         }
       catch(Exception $e){
         return response()->json(['status'=>'error','code'=>'500','meassage'=>$e->getmessage()]);
         }
 
+    }
+    public function LogOut(Request $request){
+        try{
+            auth()->user()->tokens()->delete();
+            return response()->json(['status'=>'success', 'code'=>'200','data'=>"user logout successfully"]);
+        }
+        catch(Exception $e){
+                  return response()->json(['status'=>'error','code'=>'500','meassage'=>$e->getmessage()]);
+        }
+    }
+    public function logout (Request $request){
+        echo $accessToken =$request->user()->token();die();
+        $token= $request->user()->tokens->find($accessToken);
+        $token->revoke();
+        return response(['message' => 'You have been successfully logged out.'], 200);
     }
 }
