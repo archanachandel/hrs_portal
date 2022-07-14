@@ -145,7 +145,7 @@ class LeadController extends Controller
     }
     catch(Exception $e){
         return response()->json(['status'=>'error','code'=>'500','meassage'=>$e->getmessage()]);
-    }
+     }
     }
   
 
@@ -163,8 +163,8 @@ class LeadController extends Controller
                 'category_id' => 'integer',
                 'message' => 'required',
                 'status' => 'required|string',
-                'phone_number' => 'regex:/^([0-9\s\-\+\(\)]*)$/|min:10',
-                'channel_id' =>'required|integer'
+                'phone_number' => 'regex:/^([0-9\s\-\+\(\)]*)$/|min:10'
+               
             ]);
             if($validator->fails()) { 
                  return response()->json(['code'=>'302','error'=>$validator->errors()]);            
@@ -172,12 +172,6 @@ class LeadController extends Controller
         $lead = new Lead;
         $lead->name = $request->name;
         $email=$request->email;
-        $assignee=User::select('*')->where('id',$request->assignee)->first();
-        $assignee_name=$assignee->name;
-        // $existence = Lead::where('email','=',$email)->exists();
-        // if($existence){
-        //     return response()->json(['status'=>'Error','code'=>400, 'data'=>'Record already exits']); 
-        // }
         $lead->email = $request->email;
         $lead->assignee = $request->assignee;
         $lead->category_id = $request->category_id;
@@ -189,7 +183,7 @@ class LeadController extends Controller
         $lead->channel_id = $request->channel_id;
         //$lead->datetime = $request->datetime;
         $lead->datetime = date('Y-m-d H:i:s');
-        $lead->assignee_name =  $request->assignee_name;
+        $lead->assignee_name = $request->assignee_name;
         $lead->created_by=$user->name;
         $lead->save();
 
@@ -198,7 +192,7 @@ class LeadController extends Controller
         $data1['lead_id']=$lead_id;
         $data1['user_id']=$request->assignee;
         $data1['is_seen']=0;
-        $data1['user_name']=$assignee_name;
+        $data1['user_name']=$request->assignee_name;
         $data1['channel_id']=$request->channel_id;
         $user = NotifyMsg::create($data1);
         
