@@ -179,7 +179,11 @@ class UserController extends Controller
             } 
             $id=$request->id;
             if($user->role_id==1){
-                $data=User::findorfail( $id);
+                $lead=Lead::where('assignee',$id)->where('status','active')->get();
+                if(count($lead)>0){
+                    return response()->json(['status'=>'success', 'code'=>'200','data'=>"user  have active lead"]);
+                }
+                $data=User::findorfail($id);
                 if($data){
                  $data->delete();
                      return response()->json(['status'=>'success', 'code'=>'200','data'=>"user deleted successfully"]);

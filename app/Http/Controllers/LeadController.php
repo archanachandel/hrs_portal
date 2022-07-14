@@ -353,8 +353,6 @@ class LeadController extends Controller
             return response()->json(['status'=>'error','code'=>'500','meassage'=>$e->getmessage()]);
         }
     }  
-
-
     public function getUserdetail(Request $request)
     { 
         try{
