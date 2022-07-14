@@ -83,6 +83,8 @@ class LeadController extends Controller
             $total=0;
             $complete=0;
             $news =0; 
+            $allusers=0;
+         
            
             $allchannel=$request->channel_id;
             $userid=$request->assignee;
@@ -119,19 +121,22 @@ class LeadController extends Controller
                 $newSum=Lead::when($userid,function($query,$userid){
                     return $query->where('assignee',$userid);
                 })->where('channel_id','=', $id)->where('status','new')->get()->count();
+                $users=User::where('channel_id','LIKE', '%'.$id.'%')->distinct()->count();
 
                 $active+= $activeSum;
                 $dead+=$deadSum;
                 $total+=$totalSum;
                 $news+=$newSum;
                 $complete+=$completeSum;
+                $allusers+=$users;
 
                 $new[$name]['channel_id']=$id;
                 $new[$name]['total']=$totalSum;
                 $new[$name]['active']=$activeSum;
                 $new[$name]['dead']=$deadSum;
                 $new[$name]['complete']=$completeSum;
-                $new[$name]['new']=$newSum;
+                $new[$name]['news']=$newSum;
+                $new[$name]['users']=$users;
                 
             }
              $totalSum=[];
@@ -140,12 +145,13 @@ class LeadController extends Controller
              $totalSum['new']=$news;
              $totalSum['complete']=$complete;
              $totalSum['total']=$total;
+             $totalSum['allusers']=$allusers;
 
         return response()->json(['status'=>'Success','code'=>'200', 'data'=>$new,'totalLead'=> $totalSum]);
     }
     catch(Exception $e){
         return response()->json(['status'=>'error','code'=>'500','meassage'=>$e->getmessage()]);
-     }
+    }
     }
   
 
@@ -489,7 +495,8 @@ class LeadController extends Controller
             })
             ->when($owner_id, function ($query,$owner_id) { 
                 return $query->where('assignee',$owner_id);
-             })->orderBy('created_at', 'DESC')->get();
+             })->orderBy('updated_at', 'DESC')->get();
+             
                 if(empty($data))
                 {
                     return response()->json(['status'=>'error', 'code'=>'400','data'=>'data not found']);
