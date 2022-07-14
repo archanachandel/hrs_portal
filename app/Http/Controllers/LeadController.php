@@ -398,6 +398,11 @@ class LeadController extends Controller
             }
                 foreach($complete1 as $complete){
                     $id= $complete->id;
+                    $channel_id=str_replace('[','',$complete->channel_id);
+                    $channel_id=str_replace(']','',$channel_id);
+                    $channel_id=str_replace(' ','',$channel_id);
+                    $channel_id=explode(',',$channel_id);
+                    $complete->channel_id=$channel_id;
                     $lead_array = [];
                     $totallead=Lead::select('*')->where('assignee','=',$id)->get();
                     foreach($totallead as $key=>$lead){
@@ -406,6 +411,7 @@ class LeadController extends Controller
                     $complete->leads=$lead_array;
                     $complete->total_leads= $totallead->count();
                 }
+                //dd($complete1);
             // $complete1->map(function($complete1){
             //         $complete1->registered=$complete1->created_at->diffForHumans();
             //     });

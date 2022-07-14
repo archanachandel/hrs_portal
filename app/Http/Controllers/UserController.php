@@ -80,6 +80,7 @@ class UserController extends Controller
     }
     public function loginUserDetail(){
         try {
+           // dd('here');
             $user= auth('sanctum')->user();
             $usercheck = auth('sanctum')->check();
             if($usercheck == ""){
@@ -87,7 +88,11 @@ class UserController extends Controller
             } 
             $userid=$user->id;
             $userdetail=User::find($userid);
-            //$complete2=[];
+            $channel_id=str_replace('[','',$userdetail->channel_id);
+            $channel_id=str_replace(']','',$channel_id);
+            $channel_id=str_replace(' ','',$channel_id);
+            $channel_id=explode(',',$channel_id);
+            $userdetail->channel_id=$channel_id;
             $lead_array = [];
             $totallead=Lead::select('*')->where('assignee','=',$userid)->get();
             foreach( $totallead as $key=>$lead){
@@ -95,8 +100,7 @@ class UserController extends Controller
                 $userdetail->leads=$lead_array;
             }
             $userdetail->total_leads= $totallead->count();
-            //$complete2[] =$userdetail;
-             //$userdetail = $complete2;
+            
             return response()->json(['status'=>'success', 'code'=>'200','data'=> $userdetail]);
         }
         catch(Exception $e){
@@ -112,11 +116,16 @@ class UserController extends Controller
             } 
             //$userid=$user->id;
             $userdetail=User::find($id);
+            $channel_id=str_replace('[','',$userdetail->channel_id);
+            $channel_id=str_replace(']','',$channel_id);
+            $channel_id=str_replace(' ','',$channel_id);
+            $channel_id=explode(',',$channel_id);
+            $userdetail->channel_id=$channel_id;
             $userid=$userdetail->id;
             //$complete2=[];
             $lead_array = [];
             $totallead=Lead::select('*')->where('assignee','=',$userid)->get();
-            foreach( $totallead as $key=>$lead){
+            foreach($totallead as $key=>$lead){
                 $lead_array[] = $lead->id;
                 $userdetail->leads=$lead_array;
             }
@@ -129,6 +138,7 @@ class UserController extends Controller
             return response()->json(['status'=>'error','code'=>'500','meassage'=>$e->getmessage()]);
         }
     }
+
     public function PasswordReset(Request $request){
         try{
             $user= auth('sanctum')->user();
