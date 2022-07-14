@@ -294,8 +294,6 @@ class LeadController extends Controller
     }
 
     public function editUser(Request $request){
-
-        // return response()->json($request);
         try {
             $user= auth('sanctum')->user();
             $usercheck = auth('sanctum')->check();
@@ -313,8 +311,8 @@ class LeadController extends Controller
             ]);
             if($validator->fails()) { 
                 return response()->json(['code'=>'302','error'=>$validator->errors()]);            
-               }
-               $user = Auth::user();
+            }
+            $user = Auth::user();
             $data=$request->all();
             //unset($user['password']);
             $user->name = $request->name;
@@ -344,12 +342,18 @@ class LeadController extends Controller
              }
             $user->updated_by = $username;
             $user->save();
+            $channel_id=str_replace('[','',$user->channel_id);
+            $channel_id=str_replace(']','',$channel_id);
+            $channel_id=str_replace(' ','',$channel_id);
+            $channel_id=explode(',',$channel_id);
+            $user->channel_id=$channel_id;
             return response()->json(['status'=>'success', 'code'=>'200','data'=> $user]);
         }
         catch(Exception $e){
             return response()->json(['status'=>'error','code'=>'500','meassage'=>$e->getmessage()]);
         }
     }  
+
 
     public function getUserdetail(Request $request)
     { 
