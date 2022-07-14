@@ -60,19 +60,19 @@ class UserController extends Controller
             $data['phone_number'] = $request->phone_number;    
             $data['role_id'] = $request->role_id; 
             $data['channel_id']=$request->channel_id; 
-            // $chann=str_replace('"',"[", $channel);
-            // $channn=str_replace('[',"]", $channel);
-            // dd( $channn);
-        
-            // $data['channel_id']= explode(", ",$channel);
-            // dd(  $data['channel_id']);
             $data['created_by'] = $username;
+            //dd($data->channel_id);
             $user = User::create($data);
+            $channel_id=str_replace('[','',$user->channel_id);
+            $channel_id=str_replace(']','',$channel_id);
+            $channel_id=str_replace(' ','',$channel_id);
+            $channel_id=explode(',',$channel_id);
+            $user->channel_id=$channel_id;
             $token = $user->createToken('my-app-token')->plainTextToken;
             $response = [
             'token' => $token
             ];
-            return response()->json(['status'=>'Success','code'=>200, 'Data'=>$data, 'Token'=>$response]);
+            return response()->json(['status'=>'Success','code'=>200, 'Data'=> $user, 'Token'=>$response]);
         }
         catch(Exception $e){
             return response()->json(['status'=>'error','code'=>'500','meassage'=>$e->getmessage()]);
