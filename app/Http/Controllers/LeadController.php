@@ -497,6 +497,19 @@ class LeadController extends Controller
                 return $query->where('assignee',$owner_id);
              })->orderBy('updated_at', 'DESC')->get();
              
+             foreach($data as $data1){
+                $channel= $data1->channel_id;
+                $totaluser=User::select('id','name')->where('channel_id','LIKE', '%'.$channel.'%')->where('id','!=', '1')->get();
+                $users=[];
+                foreach($totaluser as $user){
+                    $user_array=[];
+                    $user_array['id'] = $user->id;
+                    $user_array['name'] = $user->name;
+                    $users[] = $user_array;
+                }
+                $data1->user = $users;
+            }
+             
                 if(empty($data))
                 {
                     return response()->json(['status'=>'error', 'code'=>'400','data'=>'data not found']);

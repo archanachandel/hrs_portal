@@ -76,10 +76,10 @@
             </tr>
             <tr>
                 <td>
-                    <button
+                <a
                         style="margin: 2px 0; background-color: #AB0E0E; color: #fff; border-color: #AB0E0E; padding: 4px 8px; border-radius: 6px; font-size: 14px;"
-                        href="https://stgphys.appsndevs.com/leadsportal/single-lead/{{$lead_detail->id}}"
-                        target="_blank">Click Here!</button>
+                        href="https://stgn.appsndevs.com/metaland/single-lead/{{$lead_detail->id}}"
+                        target="_blank">Click Here!</a>
                 </td>
             </tr>
             <tr>
