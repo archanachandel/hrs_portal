@@ -17,7 +17,7 @@ class UserController extends Controller
         ]);
         if($validator->fails()) { 
             return response()->json(['code'=>'302','error'=>$validator->errors()]);            
-        }
+            }
         $user= User::where('email', $request->email)->first();
         if(!$user){
             return response(['message' => ['Invalid Email address']], 404); 
