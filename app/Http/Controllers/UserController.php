@@ -17,8 +17,11 @@ class UserController extends Controller
         ]);
         if($validator->fails()) { 
             return response()->json(['code'=>'302','error'=>$validator->errors()]);            
-            }
+        }
         $user= User::where('email', $request->email)->first();
+        if(!$user){
+            return response(['message' => ['Invalid Email address']], 404); 
+        }
         $role_id= $user->role_id ;
         if(!$user || !Hash::check($request->password, $user->password)) {
         return response(['message' => ['Invalid Ceredentials.']], 404); 
