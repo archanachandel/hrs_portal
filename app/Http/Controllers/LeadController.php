@@ -268,16 +268,72 @@ class LeadController extends Controller
                 return response()->json(['code'=>'302','error'=>$validator->errors()]);            
             }
             $user_id=$user->id;
+            $lead_id=$request->lead_id;
+            $comment=$request->comment;
             $addComment = new LeadsComment;
-            $addComment->lead_id =$request->lead_id;
-            $addComment->comment = $request->comment;
+            $addComment->lead_id = $lead_id;
+            $addComment->comment = $comment;
             $addComment->user_id =$user_id;
             $addComment->save();
-        return response()->json(['status'=>'Success','code'=>200, 'data'=>$addComment]);
+            $msg=  $this->sendMail($user_id,$lead_id, $comment);
+            return response()->json(['status'=>'Success','code'=>200, 'data'=>$addComment,'mail'=> $msg]);
         } catch (\Throwable $th) {
             return response()->json(['status'=>'Error','code'=>500, 'message'=>$th->getMessage()]);
         }
-    } 
+    }
+    public function sendMail($sender_id,$lead_id,$comment){
+        try{ 
+
+             $data=Lead::where('id','=',$lead_id)->first();
+             $data=json_decode($data);
+            
+              foreach($data as $lead=>$value){
+                if($lead=='assignee'){
+                    if($value==$sender_id)
+                    {
+                    $selector='assignee';
+                    }
+                }
+                if($lead=='assigned_by'){
+                    if($value==$sender_id)
+                    {
+                    $selector='assigned_by';
+                    }
+              }
+            }
+            if($selector=='assigned_by'){
+            $assignee_id=Lead::SELECT('assignee')->where('id','=',$lead_id)->first();
+            $receiver_detail=User::where('id',$assignee_id->assignee)->first();
+            }
+            if($selector=='assignee'){
+            $assignee_id=Lead::SELECT('assigned_by')->where('id','=',$lead_id)->first();
+            $receiver_detail=User::where('id', $assignee_id->assigned_by)->first();
+            }
+            //receiver detail
+            $receiver_name=$receiver_detail->name;
+            $receiver_email=$receiver_detail->email;
+            $sender_detail=User::where('id',$sender_id)->first();
+            $sender_name=$sender_detail->name;
+            $sender_email=$sender_detail->email;
+
+            $data=['name'=> $receiver_name,'sender'=>$sender_name,'comment'=>$comment,'from'=>$sender_email,'lead'=>$lead_id, 'data'=>"Thanks ",'subject'=>"Regarding new Comment"];
+            $user['to']=$receiver_email;
+            Mail::send('comment', $data, function($message) use ($user)
+            {
+            $message->to($user['to'])->subject('Regarding new comment');
+           });
+            if(Mail::failures()){
+                return "mail not sent";
+            }
+            else{
+                return "mail sent";
+            } 
+        }
+        catch (Exception $th) {
+            return "'message'=>$th->getMessage()";
+        }
+
+    }
     
     public function getComments($id){
         try{

@@ -83,9 +83,18 @@ class AssigneeController extends Controller
       if($usercheck=""){
         return response()->json(['status'=>'error','code'=>'401','message'=>'user not login']);
       }
+        $validator = Validator::make($request->all(),[ 
+          'lead_id'=> 'required|integer',
+          'user_id'=>'required|integer',
+          'role_id'=>'required|integer',
+      ]);
+      if($validator->fails()){ 
+          return response()->json(['code'=>'302','error'=>$validator->errors()]);            
+      }
       $lead_id=$request->lead_id;
       $user_id=$request->user_id;
       $login_role=$user->role_id;
+      $login_name=$user->name;
       $data1=User::find($user_id);
 
       $role_id= $data1->role_id;
@@ -98,17 +107,20 @@ class AssigneeController extends Controller
         $data->assignee =$user_id;
         $data->assignee_name =$name;
         $data->status='active';
+        $data->assigned_by = $login_name;
         }
       if($login_role == 2|| $login_role ==3){
         if($login_role ==3 && $role_id == 3){
           $data->assignee =$user_id;
           $data->assignee_name =$name;
           $data->status='active';
+          $data->assigned_by = $login_name;
         }
         elseif($login_role == 2 && ($role_id ==2||$role_id == 3)){
           $data->assignee =$user_id;
           $data->assignee_name =$name;
           $data->status='active';
+          $data->assigned_by = $login_name;
         }
         else{
           return response()->json(['status'=>'error', 'code'=>'400','data'=>'cannot assign lead']);
