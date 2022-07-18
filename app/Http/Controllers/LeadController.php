@@ -301,6 +301,10 @@ class LeadController extends Controller
                     }
               }
             }
+            if($selector==""){
+                return response()->json(['status'=>'Error','code'=>400, 'message'=> "user  not assignee and not assigner"]);
+    
+               }
             if($selector=='assigned_by'){
             $assignee_id=Lead::SELECT('assignee')->where('id','=',$lead_id)->first();
             $receiver_detail=User::where('id',$assignee_id->assignee)->first();
