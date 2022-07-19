@@ -28,19 +28,18 @@
             
             <tr>
                 <td style="text-align: center;">
-                    <h2 style="margin: 8px 0;">Hello</h2>
+                    <h2 style="margin: 8px 0;">Hello {{$name}}</h2>
                 </td>
             </tr>
             <tr>
-                <td>
-                    <p style="margin: 4px 0;"><b>{{$title}}</b> add a new comment on .</p>
+                <td style="text-align: center;">
+                    <p style="margin: 8px 0;"> Click the button below to <b>{{$title}}</b>.</p>
                   
                    
-                    <p style="margin: 4px 0; font-weight: 600;">For more details please click the button below.</p>
                 </td>
             </tr>
             <tr>
-                <td>
+                <td style="text-align: center;">
                 <a
                         style="margin: 2px 0; background-color: #AB0E0E; color: #fff; border-color: #AB0E0E; padding: 4px 8px; border-radius: 6px; font-size: 14px;"
                         href="{{$url}}" target="_blank">Click Here!</a>
@@ -48,7 +47,6 @@
             </tr>
             <tr>
                 <td>
-                    <p style="margin: 4px 0 0;"><b>Note:</b> Thanku</p>
                 </td>
             </tr>
         </table>
